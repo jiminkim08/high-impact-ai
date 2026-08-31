@@ -1,0 +1,28 @@
+# Core
+numpy>=1.26
+pandas>=2.1
+PyYAML>=6.0
+tqdm>=4.66
+
+# Embedding (Qwen3-Embedding-0.6B via transformers AutoModel)
+torch>=2.2
+transformers>=4.51
+
+# Sentence segmentation of abstracts.
+# Optional: src/preprocess.py falls back to a regex splitter if unavailable.
+blingfire>=0.1.8
+
+# Dimensionality reduction, clustering, keyphrase candidates
+umap-learn>=0.5.5
+scikit-learn>=1.4
+
+# Change-point detection
+ruptures>=1.1.9
+
+# Figures
+matplotlib>=3.8
+
+# Optional: reading the corpus directly from PostgreSQL (src/data.py).
+# Only needed when PATENT_DB_DSN is set.
+# SQLAlchemy>=2.0
+# psycopg2-binary>=2.9

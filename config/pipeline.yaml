@@ -1,0 +1,151 @@
+# =============================================================================
+# Analysis parameters for the high-impact AI patent pipeline.
+#
+# The values below are the ones used to produce the results reported in the
+# paper. Every stage reads its settings from this file; nothing is hard-coded
+# in src/.
+# =============================================================================
+
+# Domains analysed. Each is clustered independently, so topic ids are only
+# meaningful within a domain. Identifiers match queries/cpc_codes.csv.
+domains:
+  - aviation
+  - crime
+  - education
+  - energy
+  - healthcare
+  - hr
+  - immigration
+  - judicial
+  - loan
+  - nuclear
+  - public
+  - rail
+  - ship
+  - vehicle
+  - water
+
+paths:
+  # Retrieved corpus, one file per domain: <corpus_dir>/<domain>.csv
+  # Required columns: pub_number, pub_date, appl_date, title, abstract
+  corpus_dir: data/corpus
+  # Document embeddings and metadata written by src/embed.py
+  embedding_dir: data/embeddings
+  # Per-domain and cross-domain analysis outputs
+  output_dir: outputs
+
+# -----------------------------------------------------------------------------
+# Stage 1 — Text preprocessing
+# -----------------------------------------------------------------------------
+preprocess:
+  # Only title and abstract are used; claims and description are not.
+  fields: [title, abstract]
+  # Abstracts are split into sentences (blingfire) and embedded sentence-wise.
+  sentence_split: true
+  # Sentences shorter than this many whitespace tokens are dropped.
+  min_sentence_words: 3
+  # null = keep every sentence of the abstract.
+  max_sentences_per_doc: null
+
+# -----------------------------------------------------------------------------
+# Stage 2 — Patent embedding
+# -----------------------------------------------------------------------------
+embedding:
+  model_name: Qwen/Qwen3-Embedding-0.6B
+  # Optional local snapshot directory; falls back to model_name when unset.
+  local_dir: null
+  # Qwen3-Embedding is a decoder model, so the final non-padding token is
+  # pooled rather than the mean or a CLS token. This requires left padding.
+  pooling: last_token
+  padding_side: left
+  l2_normalize: true
+  max_length: 256
+  batch_size: 128
+  # Prefer bf16 on CUDA, fall back to fp16, then fp32 on CPU.
+  prefer_bf16: true
+  allow_fp16_fallback: true
+  # Group same-length texts into larger batches to reduce padding waste.
+  # Affects throughput only, not the resulting vectors.
+  dynamic_batching: true
+  checkpoint_interval: 5000
+
+# Document vector = L2-normalised weighted mean of its part vectors.
+# The title is weighted three times an abstract sentence.
+field_weights:
+  TITLE: 3.0
+  ABS: 1.0
+
+# -----------------------------------------------------------------------------
+# Stage 3 — Dimensionality reduction
+# -----------------------------------------------------------------------------
+umap:
+  n_neighbors: 15
+  n_components: 5
+  min_dist: 0.0
+  metric: cosine
+  random_state: 42
+
+# A separate 2-component projection is fitted for the scatter figures only;
+# it plays no part in clustering.
+umap_2d:
+  n_neighbors: 15
+  n_components: 2
+  min_dist: 0.0
+  metric: cosine
+  random_state: 42
+
+# -----------------------------------------------------------------------------
+# Stage 4 — Topic clustering
+# -----------------------------------------------------------------------------
+clustering:
+  algorithm: optics
+  min_samples: 10
+  min_cluster_size: 30
+  metric: euclidean
+  cluster_method: xi
+  xi: 0.05
+  n_jobs: -1
+
+# -----------------------------------------------------------------------------
+# Stage 5 — Topic labeling
+# -----------------------------------------------------------------------------
+# Candidate n-grams are counted over a sample of each topic's documents and
+# ranked by cosine similarity to the topic text in the embedding space
+# (a KeyBERT-style procedure implemented directly on the same embedder).
+labeling:
+  ngram_range: [1, 3]
+  stop_words: english
+  max_features: 500
+  top_n: 10
+  # Documents sampled per topic to form the topic text.
+  max_docs_per_topic: 200
+  # Number of top keyphrases joined to form the displayed label.
+  label_top_k: 3
+  topic_max_length: 512
+  candidate_max_length: 128
+
+# -----------------------------------------------------------------------------
+# Stage 6 — Temporal change-point analysis
+# -----------------------------------------------------------------------------
+loadings:
+  # Year is derived from appl_date (application year), not pub_date.
+  year_field: appl_date
+  # true  = share denominator is all documents in the year, so topic shares
+  #         sum to 1 minus the noise share (the setting used in the paper).
+  # false = denominator excludes noise, so shares sum to 1.
+  include_noise_in_denominator: true
+
+changepoint:
+  method: pelt
+  model: rbf
+  min_size: 2
+  jump: 1
+  penalty: 0.02
+  # Topics observed in fewer than this many years are skipped.
+  min_years: 4
+
+figures:
+  dpi: 180
+  heatmap_cmap: YlOrRd
+  # Legends are drawn only when a domain has at most this many topics.
+  max_topics_in_legend: 30

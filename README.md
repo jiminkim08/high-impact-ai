@@ -2,8 +2,6 @@
 
 Replication package for the study **"From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act."**
 
-**Status: This repository is currently being prepared as a replication package. The code, queries, and documentation are subject to change until the first stable release.**
-
 This repository provides the retrieval queries, CPC-based selection criteria, analysis code, and parameter settings used to identify and characterize high-impact AI patents.
 
 ---
@@ -20,8 +18,8 @@ The repository contains everything needed to reconstruct the analytical dataset 
 
 ```
 high-impact-ai-patents/
-├── queries/          # Patent retrieval queries and CPC code lists
-├── src/              # Analysis scripts (preprocessing → clustering → change-point analysis)
+├── queries/          # Retrieval criteria: CPC codes, keywords, worked SQL example
+├── src/              # Analysis pipeline
 ├── config/           # Model specifications and analysis parameters
 ├── requirements.txt  # Python dependencies
 ├── LICENSE
@@ -30,9 +28,9 @@ high-impact-ai-patents/
 
 | Directory | Contents |
 |---|---|
-| `queries/` | Domain-level and AI-level CPC code lists, and the keyword-based search queries used in each retrieval stage. |
-| `src/` | Scripts implementing the analytical pipeline, organized by stage. |
-| `config/` | Configuration files specifying embedding models, dimensionality-reduction and clustering hyperparameters, and change-point detection settings. |
+| `queries/` | Domain-level and AI-level CPC code lists and keyword sets, published as CSV, with the retrieval procedure rendered as SQL. See `queries/README.md`. |
+| `src/` | The analytical pipeline, one module per stage. |
+| `config/` | `pipeline.yaml` — every model specification and hyperparameter used, in one file. |
 
 ---
 
@@ -51,7 +49,7 @@ source .venv/bin/activate        # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-> A GPU is recommended for the embedding stage but is not required; all steps run on CPU with longer runtimes.
+The embedding stage was run on a single 12 GB consumer GPU (RTX 3060); `embedding.batch_size` and `embedding.max_length` in `config/pipeline.yaml` are set for that budget and should be lowered if CUDA reports out of memory. The pipeline runs on CPU as well, with substantially longer runtimes.
 
 ---
 
@@ -71,25 +69,60 @@ The complete set of retrieval queries and CPC codes is provided in `queries/`, t
 
 ## Analysis
 
-The `src/` directory implements the main analytical pipeline:
+Each of the fifteen domains is analysed **independently**: embedding, reduction, and clustering are fitted on that domain's corpus alone, so a `topic_id` is meaningful only within its domain. The pipeline stages are:
 
-1. **Text preprocessing** — normalization and cleaning of patent titles, abstracts, and claims.
-2. **Patent embedding** — dense vector representation of each patent document.
-3. **Dimensionality reduction** — projection of embeddings into a lower-dimensional space for clustering.
-4. **Topic clustering** — density-based grouping of patents into technological topics.
-5. **Topic labeling** — generation of interpretable labels for each topic.
-6. **Temporal change-point analysis** — detection of structural breaks in topic-level filing trends.
+1. **Text preprocessing** (`src/preprocess.py`) — whitespace normalization, then decomposition of each patent into weighted parts: the title as one part, the abstract as one part per sentence. Only title and abstract are used.
+2. **Patent embedding** (`src/embed.py`, `src/embedding.py`) — each part is encoded with **Qwen3-Embedding-0.6B**. As a decoder model it is pooled at the last non-padding token, which requires left padding. A document vector is the L2-normalised weighted mean of its parts, with the title weighted three times an abstract sentence.
+3. **Dimensionality reduction** (`src/cluster.py`) — UMAP to five components, cosine metric, seeded.
+4. **Topic clustering** (`src/cluster.py`) — OPTICS with the ξ cluster method; documents not assigned to a cluster are retained as noise.
+5. **Topic labeling** (`src/label.py`) — candidate n-grams are counted over a sample of each topic's documents and ranked by cosine similarity to the topic text in the same embedding space, a KeyBERT-style procedure implemented on the same embedder.
+6. **Temporal change-point analysis** (`src/changepoint.py`, `src/aggregate.py`) — yearly topic shares by **application year**, PELT change-point detection with an RBF cost, then a domain × year change-ratio table for cross-domain comparison.
 
-Model specifications and hyperparameters for each stage are documented in `config/` and in the corresponding source files, so that reported results can be reproduced exactly.
+Every parameter for these stages lives in `config/pipeline.yaml`; nothing is hard-coded in `src/`. UMAP is seeded and OPTICS is deterministic, so repeated runs on the same embeddings reproduce the same topics.
+
+### Input
+
+The pipeline begins from an already-retrieved corpus — one file per domain at `data/corpus/<domain>.csv`, with columns:
+
+```
+pub_number, pub_date, appl_date, title, abstract
+```
+
+These are the patents satisfying the criteria in `queries/`. Retrieval itself is not part of this repository; `src/data.py` can also read the corpus from PostgreSQL when `PATENT_DB_DSN` is set, as in the original setup.
 
 ### Running the pipeline
 
 ```bash
-# Adjust paths and stage names to match the scripts in src/
-python -m src.preprocess   --config config/preprocess.yaml
-python -m src.embed        --config config/embed.yaml
-python -m src.cluster      --config config/cluster.yaml
-python -m src.changepoint  --config config/changepoint.yaml
+# All stages, all domains
+python -m src.run_pipeline --config config/pipeline.yaml
+
+# A subset of domains, or a range of stages
+python -m src.run_pipeline --domains energy water
+python -m src.run_pipeline --from changepoint --to figures
+```
+
+Stages can also be run on their own:
+
+```bash
+python -m src.embed        --config config/pipeline.yaml
+python -m src.cluster      --config config/pipeline.yaml
+python -m src.changepoint  --config config/pipeline.yaml
+python -m src.aggregate    --config config/pipeline.yaml
+python -m src.figures      --config config/pipeline.yaml
+```
+
+Embedding is the expensive stage and checkpoints itself every 5,000 texts, so an interrupted run resumes rather than restarting.
+
+### Outputs
+
+```
+outputs/<domain>/doc_topics.csv                document → topic_id, topic_label
+outputs/<domain>/topics.json                   topic labels and keyphrases
+outputs/<domain>/topic_loadings.csv            yearly topic shares
+outputs/<domain>/topic_loadings_matrix.csv     years × topics
+outputs/<domain>/change_points.csv             detected change points
+outputs/domain_cluster_summary.csv             topic and noise counts per domain
+outputs/domain_year_change_ratio_heatmap.csv   cross-domain comparison
 ```
 
 ---
