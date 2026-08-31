@@ -1,0 +1,73 @@
+stage,domain,cpc_code,section,class,subclass,main_group,subgroup,match_level,description
+domain,energy,Y02E,Y,02,E,,,subclass,Reduction of greenhouse gas emissions related to energy generation
+domain,energy,H01M,H,01,M,,,subclass,Processes or means for converting chemical into electrical energy (batteries; fuel cells)
+domain,energy,F03D,F,03,D,,,subclass,Wind motors
+domain,energy,H02S,H,02,S,,,subclass,Generation of electric power by photovoltaic conversion
+domain,energy,H02J,H,02,J,,,subclass,Circuit arrangements for AC/DC supply or distribution of electric power
+domain,energy,Y04S,Y,04,S,,,subclass,Smart grids
+domain,energy,F01,F,01,,,,class,Machines or engines in general; steam engines
+domain,energy,F02,F,02,,,,class,Combustion engines
+domain,energy,F03,F,03,,,,class,Machines or engines for liquids; wind/spring/weight/miscellaneous motors
+domain,energy,G06Q50/06,G,06,Q,50,06,group,"Systems or methods for electricity, gas or water supply"
+domain,energy,G06Q10/04,G,06,Q,10,04,group,Forecasting or optimisation in administration or management
+domain,water,C02F,C,02,F,,,subclass,"Treatment of water, waste water, sewage or sludge"
+domain,water,E03B,E,03,B,,,subclass,Installations or methods for obtaining/collecting/distributing water
+domain,water,E03F,E,03,F,,,subclass,Sewers; cesspools
+domain,water,B01D,B,01,D,,,subclass,Separation (filtration; membranes)
+domain,water,G01N33/18,G,01,N,33,18,group,Investigating or analysing materials — water
+domain,water,G01M3,G,01,M,3,,group,Investigating fluid-tightness of structures (leak detection)
+domain,water,G06Q50/06,G,06,Q,50,06,group,"Systems or methods for electricity, gas or water supply"
+domain,healthcare,A61B,A,61,B,,,subclass,Diagnosis; surgery; identification
+domain,healthcare,A61B5,A,61,B,5,,group,Measuring for diagnostic purposes; identification of persons
+domain,healthcare,G16H,G,16,H,,,subclass,Healthcare informatics
+domain,healthcare,G16H50/20,G,16,H,50,20,group,ICT for computer-aided medical diagnosis or treatment planning
+domain,healthcare,G16B,G,16,B,,,subclass,Bioinformatics
+domain,healthcare,G16C,G,16,C,,,subclass,Computational chemistry; chemoinformatics; computational materials science
+domain,healthcare,G06V,G,06,V,,,subclass,Image or video recognition or understanding
+domain,healthcare,G06Q50/22,G,06,Q,50,22,group,Social work; healthcare administration
+domain,nuclear,G21C,G,21,C,,,subclass,Nuclear reactors
+domain,nuclear,G21D,G,21,D,,,subclass,Nuclear power plant
+domain,nuclear,G21F,G,21,F,,,subclass,Protection against X-radiation or radioactive irradiation; shielding
+domain,nuclear,G21B,G,21,B,,,subclass,Fusion reactors
+domain,nuclear,G01T,G,01,T,,,subclass,Measurement of nuclear or X-radiation
+domain,nuclear,G06Q50/06,G,06,Q,50,06,group,"Systems or methods for electricity, gas or water supply"
+domain,crime,G06V40,G,06,V,40,,group,Recognition of biometric or human-related patterns
+domain,crime,G08B13,G,08,B,13,,group,Burglar/theft alarms; video surveillance
+domain,crime,G06F21,G,06,F,21,,group,Security arrangements for protecting computers and data
+domain,crime,H04N7/18,H,04,N,7,18,group,Closed-circuit television (CCTV) systems
+domain,crime,G06Q50/26,G,06,Q,50,26,group,Government or public services
+domain,hr,G06Q10/1053,G,06,Q,10,1053,group,Employment or hiring
+domain,hr,G06Q10/105,G,06,Q,10,105,group,Human resources management
+domain,loan,G06Q40/03,G,06,Q,40,03,group,Credit; loans; processing thereof
+domain,loan,G06Q40/02,G,06,Q,40,02,group,Banking; e.g. interest calculation or account maintenance
+domain,vehicle,B60,B,60,,,,class,Vehicles in general
+domain,vehicle,B62D,B,62,D,,,subclass,Motor vehicles; trailers (steering)
+domain,vehicle,B60W,B,60,W,,,subclass,Conjoint control of vehicle sub-units; road vehicle drive control (ADAS)
+domain,vehicle,G05D1,G,05,D,1,,group,Control of position or course in two dimensions (autonomous control)
+domain,vehicle,G08G1,G,08,G,1,,group,Traffic control systems for road vehicles
+domain,vehicle,G06Q50/40,G,06,Q,50,40,group,Business processes related to the transportation industry
+domain,ship,B63,B,63,,,,class,Ships or other waterborne vessels
+domain,ship,B63H,B,63,H,,,subclass,Marine propulsion or steering
+domain,ship,G05D1,G,05,D,1,,group,Control of position or course in two dimensions (autonomous control)
+domain,ship,G08G3,G,08,G,3,,group,Traffic control systems for marine craft
+domain,ship,G06Q50/40,G,06,Q,50,40,group,Business processes related to the transportation industry
+domain,aviation,B64,B,64,,,,class,Aircraft; aviation; cosmonautics
+domain,aviation,B64C39/024,B,64,C,39,024,group,Aircraft of unconventional type — unmanned aerial vehicles
+domain,aviation,G05D1,G,05,D,1,,group,Control of position or course in two dimensions (autonomous control)
+domain,aviation,G08G5,G,08,G,5,,group,Traffic control systems for aircraft
+domain,aviation,G06Q50/40,G,06,Q,50,40,group,Business processes related to the transportation industry
+domain,rail,B61,B,61,,,,class,Railways
+domain,rail,B61L,B,61,L,,,subclass,Guiding railway traffic; ensuring the safety of railway traffic
+domain,rail,B60L,B,60,L,,,subclass,Propulsion of electrically propelled vehicles
+domain,rail,G05D1,G,05,D,1,,group,Control of position or course in two dimensions (autonomous control)
+domain,rail,G06Q50/40,G,06,Q,50,40,group,Business processes related to the transportation industry
+domain,public,G06Q50/26,G,06,Q,50,26,group,Government or public services
+domain,education,G09B,G,09,B,,,subclass,Educational or demonstration appliances
+domain,education,G06Q50/20,G,06,Q,50,20,group,Education
+domain,immigration,G06V40,G,06,V,40,,group,Recognition of biometric or human-related patterns
+domain,immigration,G07C9,G,07,C,9,,group,Individual entry or exit registers (access control gates)
+domain,immigration,G06Q50/26,G,06,Q,50,26,group,Government or public services
+domain,judicial,G07C13,G,07,C,13,,group,Voting apparatus
+domain,judicial,G06Q50/18,G,06,Q,50,18,group,Legal services
+domain,judicial,G06Q50/26,G,06,Q,50,26,group,Government or public services
+ai,ai,G06N,G,06,N,,,subclass,Computing arrangements based on specific computational models (AI/ML)
