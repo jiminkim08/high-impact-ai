@@ -1,6 +1,6 @@
 # High-Impact AI Patents
 
-Replication package for the study **"Mining High-Impact AI Patents Grounded in Korea's AI Framework Act."**
+Replication package for the study **"From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act."**
 
 This repository provides the retrieval queries, CPC-based selection criteria, analysis code, and parameter settings used to identify and characterize high-impact AI patents.
 
@@ -8,7 +8,7 @@ This repository provides the retrieval queries, CPC-based selection criteria, an
 
 ## Overview
 
-Korea's AI Framework Act designates a set of *high-impact* domains in which AI systems may materially affect human life, safety, or fundamental rights. This study operationalizes that legal definition as a reproducible patent-retrieval procedure, and applies an embedding-based topic pipeline to the resulting corpus to characterize the technological composition and temporal dynamics of high-impact AI patenting.
+The EU AI Act and Korea's AI Basic Act both designate a set of domains in which AI systems may materially affect human life, safety, or fundamental rights — termed *high-risk* and *high-impact*, respectively. This study operationalizes these regulatory definitions as a reproducible patent-retrieval procedure, and applies an embedding-based topic pipeline to the resulting corpus to characterize the technological composition and temporal dynamics of patenting in regulated AI domains.
 
 The repository contains everything needed to reconstruct the analytical dataset and re-run the analysis; it does not redistribute the underlying patent records (see [Data Availability](#data-availability)).
 
@@ -58,12 +58,12 @@ pip install -r requirements.txt
 The patent dataset used in this study was constructed from publicly available U.S. patent publication data. High-impact AI patents were identified through a **two-stage retrieval procedure**:
 
 **Stage 1 — Domain identification.**
-Patents belonging to high-impact domains were retrieved using domain-specific CPC codes together with keyword-based queries derived from the domain definitions in the AI Framework Act.
+Patents belonging to regulated domains were retrieved using domain-specific CPC codes together with keyword-based queries derived from the high-risk categories of the EU AI Act and the high-impact domains of Korea's AI Basic Act.
 
 **Stage 2 — AI identification.**
 Within the Stage 1 results, AI-related patents were identified using AI-related CPC codes and keyword-based criteria.
 
-The complete set of retrieval queries and CPC codes is provided in `queries/`. Applying these criteria to the data sources described in the paper reproduces the analytical corpus.
+The complete set of retrieval queries and CPC codes is provided in `queries/`, together with the mapping from each regulatory domain category to its corresponding CPC codes and keywords. Applying these criteria to the data sources described in the paper reproduces the analytical corpus.
 
 ---
 
@@ -116,13 +116,19 @@ Later versions may incorporate updated CPC classifications, revised retrieval cr
 
 If you use this repository in academic work, please cite:
 
-> [Authors]. "Mining High-Impact AI Patents Grounded in Korea's AI Framework Act." *TRUST 2026, ASE 2026.*
+> [Authors]. "From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act." In *Proceedings of the 1st International Workshop on Trustworthy and Responsible aUtonomous SysTems (TRUST 2026)*, co-located with the 41st IEEE/ACM International Conference on Automated Software Engineering (ASE 2026), Munich, Germany, 2026.
 
 ```bibtex
-@inproceedings{authors2026highimpact,
-  title     = {Mining High-Impact AI Patents Grounded in Korea's AI Framework Act},
+@inproceedings{authors2026regulation,
+  title     = {From Regulation to Innovation: Mining High-Impact AI Patents
+               Grounded in the {EU} {AI} Act and Korea's {AI} Basic Act},
   author    = {[Authors]},
-  booktitle = {TRUST 2026, ASE 2026},
+  booktitle = {Proceedings of the 1st International Workshop on Trustworthy and
+               Responsible aUtonomous SysTems (TRUST 2026), co-located with the
+               41st IEEE/ACM International Conference on Automated Software
+               Engineering (ASE 2026)},
+  address   = {Munich, Germany},
+  month     = oct,
   year      = {2026}
 }
 ```
