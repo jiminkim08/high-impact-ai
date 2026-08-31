@@ -2,7 +2,7 @@
 
 Replication package for the study **"From Regulation to Innovation: Mining High-Impact AI Patents Grounded in the EU AI Act and Korea's AI Basic Act."**
 
-Status: This repository is currently being prepared as a replication package. The code, queries, and documentation are subject to change until the first stable release.
+**Status: This repository is currently being prepared as a replication package. The code, queries, and documentation are subject to change until the first stable release.**
 
 This repository provides the retrieval queries, CPC-based selection criteria, analysis code, and parameter settings used to identify and characterize high-impact AI patents.
 
